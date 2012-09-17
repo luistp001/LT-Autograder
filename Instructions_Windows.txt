@@ -1,0 +1,86 @@
+Intructions to test and train the autograder system
+
+These instructions are for Windows.
+
+FOR TESTING
+
+The following procedure will produce exactly the same file that I sent to Kaggle for 
+the private leaderboard. 
+If you wish to train the files neccesary fora testing yourself, you can do it following 
+the procedure described in the 'FOR TRAINING SECTION'.
+
+1. Copy the file to be tested (private_leaderboard.tsv) to the to the directory /TestFile
+2. Change the name of the file to 'test.tsv'
+3. Run the python script preProcessData.py located in the folder /TestCode
+4. Run the R scripts located in the directory /TestCode 
+   in the following order, but make sure that the working directory is
+   /TestCode:
+
+	predict_labels.R
+	modelingRf.R
+	modelingGbm.R
+	AveModels.R
+
+The final predictions of the file test.tsv will saved in the directory 
+/TestCode/finalModel with the name 'finalPrediction.csv'
+
+FOR TRAINING:
+
+Warning: It may take days to be completely trained. To reduce training time, you can change some
+of the parameters described in 'PARAMETERS SECTION'. Those changes may also reduce performance.
+If you are planning to make these changes, go to the 'PARAMETERS SECTION' before doing any of the
+following steps.
+
+1. Copy the training file to the directory /TrainingCode
+2. Make sure the name of the training file is 'train_rel_2.tsv', if not, rename it.
+3. Run the python script preProcessData.py located in the folder TrainingCode
+4. Run the R scripts located in the directory /TrainingCode 
+   in the following order, but make sure that the working directory is
+   /TrainingCode:
+
+	predict_label_boruta.R
+	predict_label.R
+	variable_selection.R
+	modelingRf.R
+	modelingGbm.R
+
+The files neccesary for testing will be saved. To use those files for testing, copy and replace 
+all the files from /newTrainedModelFiles to /alreadySavedModelFiles.
+Then follow the procedure described for testing. It could produce slightly different results 
+because of the stochasticity of the Random Forest algorithm.
+
+PARAMETERS:
+
+The next changes will reduce training time but may reduce the performance as well. 
+
+In the file predict_label_boruta.R, there are 6 parameters that could be modified. These are ntreep 
+and maxRunsp for type w, b and t respectively. My chosen values are
+
+    if (type == 'w'){
+    ntreep = 37
+    maxRunsp = 150
+    }
+    if (type == 'b'){
+    ntreep = 37
+    maxRunsp = 100
+    }
+    if (type == 't'){
+    ntreep = 31
+    maxRunsp = 100
+    }
+
+Reducing the value of one or more of them will reduce training time.
+
+In the file /TrainingCode/predict_label.R, ntrees, ncv and ntry can be modified to a lower value. As a 
+suggestion, the training time to run this script is approximately linear to the ntry value, 
+but using an ntry of 1 instead of 5 may not reduce considerably the performance.
+
+In the file /TrainingCode/variable_selection.R, the values of maxRunp_fw, maxRunp_b, and ntrees can be reduced.
+In the file /TrainingCode/modelingRf.R, the value of ntrees can be reduced.
+In the file /TrainingCode/modelingGbm.R, the values of ntrees can be reduced, but in this case, the change may
+considerably reduced the performance.
+
+
+
+
+
