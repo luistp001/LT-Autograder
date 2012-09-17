@@ -1,0 +1,1 @@
+Boruta objects that contain information about important variables will be saved in this folder.
